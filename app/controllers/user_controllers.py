@@ -3,7 +3,7 @@
 # ==================================
 
 # --- Imports ---
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 import pymysql
 from flask_bcrypt import Bcrypt
 import secrets
@@ -11,14 +11,11 @@ import pymysql.cursors
 import os
 
 
+# --- Blueprint for routes ---
+user_bp = Blueprint("user", __name__)
+
 # --- Class for export
 class userController:
-    # --- To function the conn and mail objects ---
-    def __init__(self, db_connection, mail):
-        # Initialize the database connection and the mail object
+    def __init__(self, db_connection):
         self.conn = db_connection
-        self.mail = mail
-        # Make sure the directory for storing user images exists
-        # This is where we will save the retrieved images
-        os.makedirs("client/public/assets/user_profiles", exist_ok=True)
         print(f"userController initialized. db_connection received: {self.conn}")

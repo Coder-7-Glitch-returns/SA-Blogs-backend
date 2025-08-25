@@ -22,3 +22,7 @@ def init_routes(app):
     # --- API Routes ---
 
     # --- User Table APIs ---
+    # --- GET API Route ---
+    @app.route("/get-message", methods=["GET"])
+    def get_message():
+        return jsonify({"message": "SA-Blogs"}), 200

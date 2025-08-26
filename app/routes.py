@@ -22,6 +22,13 @@ def init_routes(app):
     # --- API Routes ---
 
     # --- User Table APIs ---
+    
+    # --- SignUp API ---
     @app.route('/api/users/signup', methods=['POST'])
     def signup_api():
         return user_controller.signUp()
+    
+    # --- SignUp API ---
+    @app.route('/api/users/login', methods=['POST'])
+    def login_api():
+        return user_controller.login()

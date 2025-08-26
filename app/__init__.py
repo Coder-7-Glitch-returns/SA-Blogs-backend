@@ -12,7 +12,6 @@ from .routes import init_routes
 def create_app():
     app = Flask(__name__)
     CORS(app) # Enable CORS for all routes
-    app.config['CORS_HEADERS'] = 'Content-Type' # Explicitly allow Content-Type header
 
     # --- Configure Flask-Mail ---
     # app.config['MAIL_SERVER'] = 'smtp.gmail.com'

@@ -9,8 +9,9 @@ from flask_bcrypt import Bcrypt
 import secrets
 import pymysql.cursors
 import os
-
-# --- Class for export
+import random
+from flask_mail import Message
+# --- Class for export ---
 class userController:
     def __init__(self, db_connection):
         self.conn = db_connection
@@ -59,8 +60,49 @@ class userController:
         except Exception as e:
             print(f'Error in Signup API: {e}')
             return jsonify({'message': 'An unexpected error occurred'}), 500
+        
+    # --- SIGNUP OTP SEND ---
+    def signupOtp(self, mail=None):
+        try:
+            data = request.get_json()
+            email = data.get("email")
     
-    # --- SIGNIN ---
+            # Check whether the email field is filled
+            if not email:
+                return jsonify({'success': False, 'message': 'Email is required'}), 400
+    
+            # Check whether the user exists or not
+            cursor = self.conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute("SELECT email FROM users WHERE email = %s", (email,))
+            user = cursor.fetchone()
+    
+            if not user:
+                return jsonify({'success': False, 'message': 'User not Found'}), 400
+            
+            # Otp Code sending
+            otp = str(random.randint(100000, 999999))
+            
+            msg = Message(
+                subject='Your OTP Code to Verify',
+                recipients=[email]
+            )
+            msg.body = f'Your OTP code for verifying your account is: {otp}'
+            
+            if mail:
+                mail.send(msg)   # ✅ actually send the mail
+    
+            # ⚠️ Don’t return OTP in production
+            return jsonify({"success": True, "message": "OTP sent successfully", "otp": otp}), 200
+    
+        # SQL Errors
+        except pymysql.Error as err:
+            print(f"Error in Signup OTP API: {err}")
+            return jsonify({'message': 'Database Error'}), 500
+        except Exception as e:
+            print(f'Error in Signup OTP API: {e}')
+            return jsonify({'message': 'An unexpected error occurred'}), 500
+
+    # --- LOGIN ---
     def login(self):
         try:
             data = request.get_json()

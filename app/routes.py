@@ -22,7 +22,6 @@ def init_routes(app):
     # --- API Routes ---
 
     # --- User Table APIs ---
-    # --- GET API Route ---
-    @app.route("/get-message", methods=["GET"])
-    def get_message():
-        return jsonify({"message": "SA-Blogs"}), 200
+    @app.route('/api/users/signup', methods=['POST'])
+    def signup_api():
+        return user_controller.signUp()
